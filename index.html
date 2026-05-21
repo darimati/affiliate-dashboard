@@ -105,7 +105,7 @@ function renderAdmin(partners){
   });
   h+='</div></div>';
 
-  h+='<div class="footer">DARIMATI Affiliate Dashboard \u00b7 \uad00\ub9ac\uc790 \ubdf0 \u00b7 Google Sheets \uc2e4\uc2dc\uac04 \u00b7 5\ubd84 \uc790\ub3d9 \uac31\uc2e0</div>';
+  h+='<div class="footer">DARIMATI Affiliate Dashboard \u00b7 \uad00\ub9ac\uc790 \ubdf0 \u00b7 Google Sheets \uc2e4\uc2dc\uac04 \u00b7 1\uc2dc\uac04 \uc790\ub3d9 \uac31\uc2e0</div>';
   return h;
 }
 
@@ -126,7 +126,7 @@ function renderPartner(p,allPartners){
     h+='<div class="partner-links"><h3>\ub098\uc758 \ud788\ub4e0\ub9c1\ud06c</h3><div class="link-row"><span>\uc0c1\ud488 \ub9c1\ud06c</span><a href="'+u+'" target="_blank">'+u+'</a></div></div>';
   }
 
-  h+='<div class="footer">DARIMATI Affiliate Dashboard \u00b7 '+p['\ud30c\ud2b8\ub108\uba85']+' \u00b7 5\ubd84 \uc790\ub3d9 \uac31\uc2e0<br><a href="?" style="color:var(--accent-light);text-decoration:none">\u2190 \uc804\uccb4 \ub300\uc2dc\ubcf4\ub4dc</a></div>';
+  h+='<div class="footer">DARIMATI Affiliate Dashboard \u00b7 '+p['\ud30c\ud2b8\ub108\uba85']+' \u00b7 1\uc2dc\uac04 \uc790\ub3d9 \uac31\uc2e0<br><a href="?" style="color:var(--accent-light);text-decoration:none">\u2190 \uc804\uccb4 \ub300\uc2dc\ubcf4\ub4dc</a></div>';
   return h;
 }
 
@@ -159,7 +159,7 @@ async function load(){
 }
 
 load();
-setInterval(load,5*60*1000);
+setInterval(load,60*60*1000);
 </script>
 </body>
 </html>
