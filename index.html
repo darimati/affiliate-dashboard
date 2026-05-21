@@ -88,7 +88,7 @@ function renderAdmin(partners){
   h+='<div class="section-title">\ud30c\ud2b8\ub108\ubcc4 \ud604\ud669</div><div class="table-wrap"><table><thead><tr><th>No</th><th>\ud30c\ud2b8\ub108\uba85</th><th>\uc0c1\ud488\uba85</th><th>\ud788\ub4e0\ub9c1\ud06c</th><th>\uc624\ud508\uc77c</th><th>\uae08\uc561</th><th>\ud310\ub9e4\uac74\uc218</th><th>\ub9e4\ucd9c</th><th>\uc0c1\ud0dc</th></tr></thead><tbody>';
   partners.forEach(function(p){
     var u=p['\ud788\ub4e0\ub9c1\ud06c URL']||'';var su=u.replace('https://brand.naver.com/darimati/products/','').substring(0,12)+'...';
-    h+='<tr><td>'+(p.No||'')+'</td><td><a href="?partner='+encodeURIComponent(p['\ud30c\ud2b8\ub108\uba85'])+'" style="color:var(--text);text-decoration:none"><strong>'+p['\ud30c\ud2b8\ub108\uba85']+'</strong></a></td><td>'+(p['\uc0c1\ud488\uba85']||'<span style="color:var(--muted)">\ubbf8\ub4f1\ub85d</span>')+'</td><td class="link-cell">'+(u?'<a href="'+u+'" target="_blank">'+su+'</a>':'-')+'</td><td>'+(p['\uc624\ud508\uc77c\uc790']||'-')+'</td><td>'+(p['\uae08\uc561 (\ub300\ud45c\uac00 \uae30\uc900)']||p['\uae08\uc561']||'-')+'</td><td>'+(p['\ud310\ub9e4\uac74\uc218']||'-')+'</td><td>'+(p['\ub9e4\ucd9c']||'-')+'</td><td>'+sb(p['\uc0c1\ud0dc'])+'</td></tr>';
+    h+='<tr><td>'+(p.No||'')+'</td><td><a href="partner.html?partner='+encodeURIComponent(p['\ud30c\ud2b8\ub108\uba85'])+'" style="color:var(--text);text-decoration:none"><strong>'+p['\ud30c\ud2b8\ub108\uba85']+'</strong></a></td><td>'+(p['\uc0c1\ud488\uba85']||'<span style="color:var(--muted)">\ubbf8\ub4f1\ub85d</span>')+'</td><td class="link-cell">'+(u?'<a href="'+u+'" target="_blank">'+su+'</a>':'-')+'</td><td>'+(p['\uc624\ud508\uc77c\uc790']||'-')+'</td><td>'+(p['\uae08\uc561 (\ub300\ud45c\uac00 \uae30\uc900)']||p['\uae08\uc561']||'-')+'</td><td>'+(p['\ud310\ub9e4\uac74\uc218']||'-')+'</td><td>'+(p['\ub9e4\ucd9c']||'-')+'</td><td>'+sb(p['\uc0c1\ud0dc'])+'</td></tr>';
   });
   h+='</tbody></table></div>';
 
@@ -101,7 +101,7 @@ function renderAdmin(partners){
 
   h+='<div class="partner-list"><h3>\ud30c\ud2b8\ub108 \uac1c\ubcc4 \ub300\uc2dc\ubcf4\ub4dc \ub9c1\ud06c</h3><div class="chips">';
   partners.forEach(function(p){
-    h+='<a class="chip" href="?partner='+encodeURIComponent(p['\ud30c\ud2b8\ub108\uba85'])+'">'+p['\ud30c\ud2b8\ub108\uba85']+'</a>';
+    h+='<a class="chip" href="partner.html?partner='+encodeURIComponent(p['\ud30c\ud2b8\ub108\uba85'])+'">'+p['\ud30c\ud2b8\ub108\uba85']+'</a>';
   });
   h+='</div></div>';
 
