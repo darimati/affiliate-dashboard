@@ -17,7 +17,7 @@ SHEET_GID = "1331996880"
 def fetch_sheet():
     url = (
         f"https://docs.google.com/spreadsheets/d/{SHEET_ID}"
-        f"/gviz/tq?tqx=out:csv&gid={SHEET_GID}"
+        f"/gviz/tq?tqx=out:csv&gid={SHEET_GID}&headers=1"
     )
     with urllib.request.urlopen(url) as resp:
         text = resp.read().decode("utf-8")
