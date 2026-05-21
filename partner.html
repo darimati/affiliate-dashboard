@@ -142,13 +142,7 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 </div>
 
 <script>
-var SHEET_ID='1TtkspzT2Ng9Mm9Kp7EOPBx-ns2eDY5Mbvixt5tL_LcU';
-var SHEET_NAME='\uc2a4\ub9c8\ud2b8\uc2a4\ud1a0\uc5b4 \ub9c1\ud06c \uc544\uce74\uc774\ube0c';
-
 function getParam(k){return new URLSearchParams(location.search).get(k)}
-function gvizUrl(s){return'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet='+encodeURIComponent(s)}
-function parseGviz(t){var m=t.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?\s*$/);if(!m){var j=t.match(/\{[\s\S]+\}/);return j?JSON.parse(j[0]):null}return JSON.parse(m[1])}
-function extractRows(d){if(!d||!d.table)return[];var c=d.table.cols.map(function(x){return x.label||''});return d.table.rows.map(function(r){var o={};r.c.forEach(function(cell,i){o[c[i]]=cell?(cell.f||cell.v||''):''});return o})}
 function pm(s){if(!s||s==='-'||s==='')return 0;return parseInt(String(s).replace(/[^0-9]/g,''),10)||0}
 function fm(n){return n===0?'0\uc6d0':n.toLocaleString('ko-KR')+'\uc6d0'}
 function fms(n){if(n===0)return'0';if(n>=10000)return(n/10000).toFixed(1)+'\ub9cc';return n.toLocaleString('ko-KR')}
@@ -248,42 +242,30 @@ function renderPartner(p){
   return h;
 }
 
-function renderSelector(partners){
-  var h='<nav class="nav"><div class="container" style="display:flex;align-items:center;width:100%;max-width:1040px;margin:0 auto"><div class="logo"><span>DARIMATI</span> Partner</div></div></nav>';
-  h+='<section class="hero"><div class="container"><h1 style="color:var(--text-inv)">\ud30c\ud2b8\ub108 <em>\uc120\ud0dd</em></h1><div class="greeting" style="margin-top:8px">URL\uc5d0 ?partner=\uc774\ub984 \ud30c\ub77c\ubbf8\ud130\ub97c \ucd94\uac00\ud558\uac70\ub098 \uc544\ub798\uc5d0\uc11c \uc120\ud0dd\ud558\uc138\uc694</div></div></section>';
-  h+='<section style="padding:32px 0"><div class="container"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px">';
-  partners.forEach(function(p){
-    var name=p['\ud30c\ud2b8\ub108\uba85'];
-    h+='<a href="?partner='+encodeURIComponent(name)+'" style="text-decoration:none"><div class="kpi-card" style="text-align:center;cursor:pointer;transition:border-color .2s"><div style="width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;margin:0 auto 10px">'+name.charAt(0)+'</div><div style="font-size:14px;font-weight:600;color:var(--text)">'+name+'</div><div style="font-size:11px;color:var(--muted);margin-top:4px">'+(p['\uc624\ud508\uc77c\uc790']||'')+'</div></div></a>';
-  });
-  h+='</div></div></section>';
-  h+='<div class="footer"><div class="container">DARIMATI Affiliate</div></div>';
-  return h;
+function renderNoAccess(){
+  return '<nav class="nav"><div class="container" style="display:flex;align-items:center;width:100%;max-width:1040px;margin:0 auto"><div class="logo"><span>DARIMATI</span> Partner</div></div></nav><div style="text-align:center;padding:120px 24px"><h2 style="color:var(--text);margin-bottom:12px">\uc811\uadfc \uad8c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4</h2><p style="color:var(--muted);font-size:14px">\uc720\ud6a8\ud55c \ub300\uc2dc\ubcf4\ub4dc \ub9c1\ud06c\ub97c \ud1b5\ud574 \uc811\uc18d\ud574\uc8fc\uc138\uc694.</p></div>';
 }
 
 async function load(){
-  try{
-    var r=await fetch(gvizUrl(SHEET_NAME));
-    var t=await r.text();
-    var d=parseGviz(t);
-    var rows=extractRows(d);
-    var partners=rows.filter(function(x){return x['\ud30c\ud2b8\ub108\uba85']&&x['\ud30c\ud2b8\ub108\uba85'].trim()!==''});
-    var pn=getParam('partner');
-    var app=document.getElementById('app');
+  var token=getParam('token');
+  var app=document.getElementById('app');
 
-    if(pn){
-      var found=partners.find(function(p){return p['\ud30c\ud2b8\ub108\uba85']===pn});
-      if(found){
-        app.innerHTML=renderPartner(found);
-        document.title='DARIMATI - '+found['\ud30c\ud2b8\ub108\uba85']+' Dashboard';
-      }else{
-        app.innerHTML=renderSelector(partners);
-      }
-    }else{
-      app.innerHTML=renderSelector(partners);
+  if(!token){
+    app.innerHTML=renderNoAccess();
+    return;
+  }
+
+  try{
+    var r=await fetch('data/'+encodeURIComponent(token)+'.json');
+    if(!r.ok){
+      app.innerHTML=renderNoAccess();
+      return;
     }
+    var p=await r.json();
+    app.innerHTML=renderPartner(p);
+    document.title='DARIMATI - '+(p['\ud30c\ud2b8\ub108\uba85']||'')+' Dashboard';
   }catch(e){
-    document.getElementById('app').innerHTML='<div style="text-align:center;padding:80px 24px;color:var(--muted)"><h2>\ub370\uc774\ud130 \ub85c\ub4dc \uc2e4\ud328</h2><p style="margin-top:8px">'+e.message+'</p></div>';
+    app.innerHTML='<div style="text-align:center;padding:80px 24px;color:var(--muted)"><h2>\ub370\uc774\ud130 \ub85c\ub4dc \uc2e4\ud328</h2><p style="margin-top:8px">'+e.message+'</p></div>';
   }
 }
 load();
