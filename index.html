@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DARIMATI Affiliate Dashboard</title>
+<style>
+:root{--bg:#0f1117;--card:#1a1d27;--border:#2a2d3a;--text:#e4e4e7;--muted:#71717a;--accent:#6366f1;--accent-light:#818cf8;--green:#22c55e;--yellow:#eab308;--red:#ef4444}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-.5px}
+.header h1 span{color:var(--accent-light)}
+.meta{display:flex;align-items:center;gap:16px;font-size:13px;color:var(--muted)}
+.live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.view-badge{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.view-admin{background:rgba(99,102,241,.15);color:var(--accent-light)}
+.view-partner{background:rgba(34,197,94,.15);color:var(--green)}
+.partner-header{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:28px;display:flex;align-items:center;gap:16px}
+.partner-header .avatar{width:48px;height:48px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff}
+.partner-header .info h2{font-size:18px;font-weight:600}
+.partner-header .info .sub{font-size:13px;color:var(--muted)}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
+.summary-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+.summary-card .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.summary-card .value{font-size:28px;font-weight:700}
+.summary-card .sub{font-size:12px;color:var(--muted);margin-top:4px}
+.section-title{font-size:16px;font-weight:600;margin-bottom:14px}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow-x:auto;margin-bottom:28px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:12px 16px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 16px;border-bottom:1px solid var(--border);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(99,102,241,.04)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.badge-active{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-pending{background:rgba(234,179,8,.15);color:var(--yellow)}
+.badge-ended{background:rgba(239,68,68,.15);color:var(--red)}
+.link-cell{max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.link-cell a{color:var(--accent-light);text-decoration:none}
+.link-cell a:hover{text-decoration:underline}
+.settlement-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:28px}
+.settle-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.settle-card .name{font-weight:600;margin-bottom:8px}
+.settle-card .row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+.settle-card .row .k{color:var(--muted)}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;margin-top:10px;overflow:hidden}
+.progress-bar .fill{height:100%;background:var(--accent);border-radius:3px;transition:width .5s}
+.api-status{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:12px;background:rgba(239,68,68,.12);color:var(--red)}
+.partner-links{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:28px}
+.partner-links h3{font-size:14px;margin-bottom:10px}
+.partner-links .link-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.partner-links .link-row:last-child{border-bottom:none}
+.partner-links .link-row a{color:var(--accent-light);text-decoration:none;word-break:break-all}
+.partner-list{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:28px}
+.partner-list h3{font-size:14px;margin-bottom:12px;color:var(--muted)}
+.partner-list .chips{display:flex;flex-wrap:wrap;gap:8px}
+.partner-list .chip{padding:6px 14px;border-radius:20px;font-size:13px;background:var(--border);color:var(--text);text-decoration:none;transition:background .2s}
+.partner-list .chip:hover{background:var(--accent);color:#fff}
+.footer{text-align:center;font-size:12px;color:var(--muted);padding-top:20px;border-top:1px solid var(--border)}
+@media(max-width:600px){body{padding:12px}.summary-card .value{font-size:22px}.header h1{font-size:18px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var SHEET_ID='1TtkspzT2Ng9Mm9Kp7EOPBx-ns2eDY5Mbvixt5tL_LcU';
+var SHEET_NAME='\uc2a4\ub9c8\ud2b8\uc2a4\ud1a0\uc5b4 \ub9c1\ud06c \uc544\uce74\uc774\ube0c';
+
+function getParam(k){return new URLSearchParams(location.search).get(k)}
+function gvizUrl(s){return'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet='+encodeURIComponent(s)}
+function parseGviz(t){var m=t.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?\s*$/);if(!m){var j=t.match(/\{[\s\S]+\}/);return j?JSON.parse(j[0]):null}return JSON.parse(m[1])}
+function extractRows(d){if(!d||!d.table)return[];var c=d.table.cols.map(function(x){return x.label||''});return d.table.rows.map(function(r){var o={};r.c.forEach(function(cell,i){o[c[i]]=cell?(cell.f||cell.v||''):''});return o})}
+function pm(s){if(!s||s==='-'||s==='')return 0;return parseInt(String(s).replace(/[^0-9]/g,''),10)||0}
+function fm(n){return n===0?'-':n.toLocaleString('ko-KR')+'\uc6d0'}
+function sb(s){if(!s||s==='-'||s==='')return'<span class="badge badge-active">\ud65c\uc131</span>';var l=s.toLowerCase();if(l.indexOf('\uc885\ub8cc')>=0)return'<span class="badge badge-ended">\uc885\ub8cc</span>';if(l.indexOf('\ub300\uae30')>=0)return'<span class="badge badge-pending">\ub300\uae30</span>';return'<span class="badge badge-active">\ud65c\uc131</span>'}
+function timeStr(){var n=new Date();return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0')}
+
+function renderAdmin(partners){
+  var ts=0,tr=0,sc=0;
+  partners.forEach(function(p){ts+=pm(p['\ud310\ub9e4\uac74\uc218']);var v=pm(p['\ub9e4\ucd9c']);tr+=v;if(v>=100000)sc++});
+
+  var h='<div class="header"><h1><span>DARIMATI</span> Affiliate Dashboard</h1><div class="meta"><span class="view-badge view-admin">\uad00\ub9ac\uc790</span><span class="api-status" id="apiStatus">API IP \ub300\uae30</span><span><span class="live-dot"></span> \uc2e4\uc2dc\uac04</span><span>'+timeStr()+'</span></div></div>';
+
+  h+='<div class="summary-grid"><div class="summary-card"><div class="label">\ud65c\uc131 \ud30c\ud2b8\ub108</div><div class="value">'+partners.length+'</div><div class="sub">\uc804\uccb4 \ub4f1\ub85d</div></div><div class="summary-card"><div class="label">\ucd1d \ud310\ub9e4</div><div class="value">'+(ts>0?ts.toLocaleString()+'\uac74':'0\uac74')+'</div><div class="sub">\uc804\uccb4 \uae30\uac04</div></div><div class="summary-card"><div class="label">\ucd1d \ub9e4\ucd9c</div><div class="value">'+(tr>0?fm(tr):'0\uc6d0')+'</div><div class="sub">\ub204\uc801</div></div><div class="summary-card"><div class="label">\uc815\uc0b0 \ub300\uc0c1</div><div class="value">'+sc+'\uba85</div><div class="sub">10\ub9cc\uc6d0 \uc774\uc0c1</div></div></div>';
+
+  h+='<div class="section-title">\ud30c\ud2b8\ub108\ubcc4 \ud604\ud669</div><div class="table-wrap"><table><thead><tr><th>No</th><th>\ud30c\ud2b8\ub108\uba85</th><th>\uc0c1\ud488\uba85</th><th>\ud788\ub4e0\ub9c1\ud06c</th><th>\uc624\ud508\uc77c</th><th>\uae08\uc561</th><th>\ud310\ub9e4\uac74\uc218</th><th>\ub9e4\ucd9c</th><th>\uc0c1\ud0dc</th></tr></thead><tbody>';
+  partners.forEach(function(p){
+    var u=p['\ud788\ub4e0\ub9c1\ud06c URL']||'';var su=u.replace('https://brand.naver.com/darimati/products/','').substring(0,12)+'...';
+    h+='<tr><td>'+(p.No||'')+'</td><td><a href="?partner='+encodeURIComponent(p['\ud30c\ud2b8\ub108\uba85'])+'" style="color:var(--text);text-decoration:none"><strong>'+p['\ud30c\ud2b8\ub108\uba85']+'</strong></a></td><td>'+(p['\uc0c1\ud488\uba85']||'<span style="color:var(--muted)">\ubbf8\ub4f1\ub85d</span>')+'</td><td class="link-cell">'+(u?'<a href="'+u+'" target="_blank">'+su+'</a>':'-')+'</td><td>'+(p['\uc624\ud508\uc77c\uc790']||'-')+'</td><td>'+(p['\uae08\uc561 (\ub300\ud45c\uac00 \uae30\uc900)']||p['\uae08\uc561']||'-')+'</td><td>'+(p['\ud310\ub9e4\uac74\uc218']||'-')+'</td><td>'+(p['\ub9e4\ucd9c']||'-')+'</td><td>'+sb(p['\uc0c1\ud0dc'])+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  h+='<div class="section-title">\ud30c\ud2b8\ub108\ubcc4 \uc815\uc0b0 \ud604\ud669 (\uc774\ubc88 \ub2ec)</div><div class="settlement-grid">';
+  partners.forEach(function(p){
+    var v=pm(p['\ub9e4\ucd9c']),th=100000,pc=v>0?Math.min(100,Math.round(v/th*100)):0,cm=Math.round(v*.1);
+    h+='<div class="settle-card"><div class="name">'+p['\ud30c\ud2b8\ub108\uba85']+'</div><div class="row"><span class="k">\ub9e4\ucd9c</span><span>'+(v>0?fm(v):'-')+'</span></div><div class="row"><span class="k">\uc218\uc218\ub8cc (10%)</span><span>'+(cm>0?fm(cm):'-')+'</span></div><div class="row"><span class="k">\uc815\uc0b0 \ucd5c\uc18c</span><span>'+(v>=th?'\ub2ec\uc131':fm(th-v)+' \ub0a8\uc74c')+'</span></div><div class="progress-bar"><div class="fill" style="width:'+pc+'%"></div></div></div>';
+  });
+  h+='</div>';
+
+  h+='<div class="partner-list"><h3>\ud30c\ud2b8\ub108 \uac1c\ubcc4 \ub300\uc2dc\ubcf4\ub4dc \ub9c1\ud06c</h3><div class="chips">';
+  partners.forEach(function(p){
+    h+='<a class="chip" href="?partner='+encodeURIComponent(p['\ud30c\ud2b8\ub108\uba85'])+'">'+p['\ud30c\ud2b8\ub108\uba85']+'</a>';
+  });
+  h+='</div></div>';
+
+  h+='<div class="footer">DARIMATI Affiliate Dashboard \u00b7 \uad00\ub9ac\uc790 \ubdf0 \u00b7 Google Sheets \uc2e4\uc2dc\uac04 \u00b7 5\ubd84 \uc790\ub3d9 \uac31\uc2e0</div>';
+  return h;
+}
+
+function renderPartner(p,allPartners){
+  var v=pm(p['\ub9e4\ucd9c']),sales=pm(p['\ud310\ub9e4\uac74\uc218']),th=100000,pc=v>0?Math.min(100,Math.round(v/th*100)):0,cm=Math.round(v*.1);
+  var initial=p['\ud30c\ud2b8\ub108\uba85'].charAt(0);
+
+  var h='<div class="header"><h1><span>DARIMATI</span> Affiliate</h1><div class="meta"><span class="view-badge view-partner">\ud30c\ud2b8\ub108</span><span><span class="live-dot"></span> \uc2e4\uc2dc\uac04</span><span>'+timeStr()+'</span></div></div>';
+
+  h+='<div class="partner-header"><div class="avatar">'+initial+'</div><div class="info"><h2>'+p['\ud30c\ud2b8\ub108\uba85']+'</h2><div class="sub">\uc624\ud508: '+(p['\uc624\ud508\uc77c\uc790']||'-')+' \u00b7 \uae08\uc561: '+(p['\uae08\uc561 (\ub300\ud45c\uac00 \uae30\uc900)']||p['\uae08\uc561']||'-')+'</div></div></div>';
+
+  h+='<div class="summary-grid"><div class="summary-card"><div class="label">\ud310\ub9e4\uac74\uc218</div><div class="value">'+(sales>0?sales.toLocaleString()+'\uac74':'0\uac74')+'</div><div class="sub">\ub204\uc801</div></div><div class="summary-card"><div class="label">\ub9e4\ucd9c</div><div class="value">'+(v>0?fm(v):'0\uc6d0')+'</div><div class="sub">\ub204\uc801</div></div><div class="summary-card"><div class="label">\uc218\uc218\ub8cc (10%)</div><div class="value">'+(cm>0?fm(cm):'0\uc6d0')+'</div><div class="sub">\uc608\uc0c1 \uc815\uc0b0\uc561</div></div><div class="summary-card"><div class="label">\uc815\uc0b0 \uc0c1\ud0dc</div><div class="value">'+(v>=th?'\ub2ec\uc131':fm(th-v))+'</div><div class="sub">'+(v>=th?'\uc775\uc6d4 15\uc77c \uc9c0\uae09':'\ucd5c\uc18c \uae08\uc561\uae4c\uc9c0 \ub0a8\uc74c')+'</div></div></div>';
+
+  h+='<div class="settle-card" style="margin-bottom:28px"><div class="name">\uc815\uc0b0 \uc9c4\ud589\ub960</div><div class="row"><span class="k">\ud604\uc7ac \ub9e4\ucd9c</span><span>'+(v>0?fm(v):'0\uc6d0')+'</span></div><div class="row"><span class="k">\uc815\uc0b0 \ucd5c\uc18c (10\ub9cc\uc6d0)</span><span>'+pc+'%</span></div><div class="progress-bar" style="height:8px"><div class="fill" style="width:'+pc+'%"></div></div></div>';
+
+  var u=p['\ud788\ub4e0\ub9c1\ud06c URL']||'';
+  if(u){
+    h+='<div class="partner-links"><h3>\ub098\uc758 \ud788\ub4e0\ub9c1\ud06c</h3><div class="link-row"><span>\uc0c1\ud488 \ub9c1\ud06c</span><a href="'+u+'" target="_blank">'+u+'</a></div></div>';
+  }
+
+  h+='<div class="footer">DARIMATI Affiliate Dashboard \u00b7 '+p['\ud30c\ud2b8\ub108\uba85']+' \u00b7 5\ubd84 \uc790\ub3d9 \uac31\uc2e0<br><a href="?" style="color:var(--accent-light);text-decoration:none">\u2190 \uc804\uccb4 \ub300\uc2dc\ubcf4\ub4dc</a></div>';
+  return h;
+}
+
+async function load(){
+  try{
+    var r=await fetch(gvizUrl(SHEET_NAME));
+    var t=await r.text();
+    var d=parseGviz(t);
+    var rows=extractRows(d);
+    var partners=rows.filter(function(x){return x['\ud30c\ud2b8\ub108\uba85']&&x['\ud30c\ud2b8\ub108\uba85'].trim()!==''});
+
+    var partnerParam=getParam('partner');
+    var app=document.getElementById('app');
+
+    if(partnerParam){
+      var found=partners.find(function(p){return p['\ud30c\ud2b8\ub108\uba85']===partnerParam});
+      if(found){
+        app.innerHTML=renderPartner(found,partners);
+        document.title='DARIMATI - '+found['\ud30c\ud2b8\ub108\uba85'];
+      }else{
+        app.innerHTML='<div style="text-align:center;padding:60px;color:var(--muted)"><h2>\ud30c\ud2b8\ub108\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4</h2><p style="margin-top:12px"><a href="?" style="color:var(--accent-light)">\uc804\uccb4 \ub300\uc2dc\ubcf4\ub4dc\ub85c \ub3cc\uc544\uac00\uae30</a></p></div>';
+      }
+    }else{
+      app.innerHTML=renderAdmin(partners);
+    }
+  }catch(e){
+    console.error(e);
+    document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--red)">\ub370\uc774\ud130 \ub85c\ub4dc \uc2e4\ud328: '+e.message+'</div>';
+  }
+}
+
+load();
+setInterval(load,5*60*1000);
+</script>
+</body>
+</html>
