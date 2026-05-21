@@ -22,6 +22,17 @@ def fetch_sheet():
     with urllib.request.urlopen(url) as resp:
         text = resp.read().decode("utf-8")
     reader = csv.DictReader(io.StringIO(text))
+    # Clean header names: strip whitespace, remove extra text after known headers
+    clean = []
+    for f in reader.fieldnames:
+        c = f.strip()
+        # Handle headers with appended content (e.g. "No 관리자 대시보드" → "No")
+        for known in ["No", "\ub300\uc2dc\ubcf4\ub4dc URL", "\ub300\uc2dc\ubcf4\ub4dc \uc804\ub2ec"]:
+            if c.startswith(known) and len(c) > len(known):
+                c = known
+                break
+        clean.append(c)
+    reader.fieldnames = clean
     rows = []
     for row in reader:
         name = row.get("\ud30c\ud2b8\ub108\uba85", "").strip()
@@ -49,7 +60,7 @@ def main():
 
     generated = 0
     for token, partner_name in token_to_name.items():
-        matched = [r for r in rows if r.get("\ud30c\ud2b8\ub108\uba85", "") == partner_name]
+        matched = [r for r in rows if r.get("\ud30c\ud2b8\ub108\uba85", "").strip() == partner_name]
         if not matched:
             print(f"  WARN: no data for '{partner_name}', skipping")
             continue
@@ -57,7 +68,7 @@ def main():
         partner_data = {}
         for k, v in matched[0].items():
             if k and k not in hidden_cols:
-                partner_data[k] = v
+                partner_data[k] = v.strip() if isinstance(v, str) else v
 
         out_path = os.path.join("data", f"{token}.json")
         with open(out_path, "w", encoding="utf-8") as f:
