@@ -71,7 +71,7 @@ var SHEET_NAME='\uc2a4\ub9c8\ud2b8\uc2a4\ud1a0\uc5b4 \ub9c1\ud06c \uc544\uce74\u
 function getParam(k){return new URLSearchParams(location.search).get(k)}
 function gvizUrl(s){return'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet='+encodeURIComponent(s)}
 function parseGviz(t){var m=t.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?\s*$/);if(!m){var j=t.match(/\{[\s\S]+\}/);return j?JSON.parse(j[0]):null}return JSON.parse(m[1])}
-function extractRows(d){if(!d||!d.table)return[];var c=d.table.cols.map(function(x){return x.label||''});return d.table.rows.map(function(r){var o={};r.c.forEach(function(cell,i){o[c[i]]=cell?(cell.f||cell.v||''):''});return o})}
+function extractRows(d){if(!d||!d.table)return[];var c=d.table.cols.map(function(x){var l=x.label||'';return l.split(/\n/)[0].trim()});return d.table.rows.map(function(r){var o={};r.c.forEach(function(cell,i){o[c[i]]=cell?(cell.f||cell.v||''):''});return o})}
 function pm(s){if(!s||s==='-'||s==='')return 0;return parseInt(String(s).replace(/[^0-9]/g,''),10)||0}
 function fm(n){return n===0?'-':n.toLocaleString('ko-KR')+'\uc6d0'}
 function sb(s){if(!s||s==='-'||s==='')return'<span class="badge badge-active">\ud65c\uc131</span>';var l=s.toLowerCase();if(l.indexOf('\uc885\ub8cc')>=0)return'<span class="badge badge-ended">\uc885\ub8cc</span>';if(l.indexOf('\ub300\uae30')>=0)return'<span class="badge badge-pending">\ub300\uae30</span>';return'<span class="badge badge-active">\ud65c\uc131</span>'}
