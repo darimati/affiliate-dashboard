@@ -154,7 +154,7 @@ function renderPartner(p){
   var revenue=pm(p['\ub9e4\ucd9c']);
   var price=pm(p['\uae08\uc561 (\ub300\ud45c\uac00 \uae30\uc900)']||p['\uae08\uc561']||'129000');
   var commission=Math.round(revenue*0.1);
-  var threshold=100000;
+  var threshold=50000;
   var pct=revenue>0?Math.min(100,Math.round(revenue/threshold*100)):0;
   var openDate=p['\uc624\ud508\uc77c\uc790']||'-';
   var url=p['\ud310\ub9e4\ub9c1\ud06c URL']||'';
@@ -212,7 +212,7 @@ function renderPartner(p){
   var circumference=2*Math.PI*42;
   var dashoffset=circumference-(pct/100)*circumference;
   h+='<div class="ring-wrap"><svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#e6e6e6" stroke-width="8"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6366f1" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+circumference+'" stroke-dashoffset="'+dashoffset+'"/></svg><div class="ring-text"><div class="ring-pct">'+pct+'%</div><div class="ring-label">\ub2ec\uc131\ub960</div></div></div>';
-  h+='<div class="settle-info"><div class="settle-row"><span class="sk">\ud604\uc7ac \ub9e4\ucd9c</span><span class="sv">'+(revenue>0?fm(revenue):'0\uc6d0')+'</span></div><div class="settle-row"><span class="sk">\ucd5c\uc18c \uae08\uc561</span><span class="sv">100,000\uc6d0</span></div><div class="settle-row"><span class="sk">\uc218\uc218\ub8cc\uc728</span><span class="sv">10%</span></div><div class="settle-row"><span class="sk">\uc9c0\uae09\uc77c</span><span class="sv">\uc775\uc6d4 15\uc77c</span></div></div>';
+  h+='<div class="settle-info"><div class="settle-row"><span class="sk">\ud604\uc7ac \ub9e4\ucd9c</span><span class="sv">'+(revenue>0?fm(revenue):'0\uc6d0')+'</span></div><div class="settle-row"><span class="sk">\ucd5c\uc18c \uae08\uc561</span><span class="sv">50,000\uc6d0</span></div><div class="settle-row"><span class="sk">\uc218\uc218\ub8cc\uc728</span><span class="sv">10%</span></div><div class="settle-row"><span class="sk">\uc9c0\uae09\uc77c</span><span class="sv">\uc775\uc6d4 15\uc77c</span></div></div>';
   h+='</div></div>';
 
   h+='</div>'; // chart-grid
