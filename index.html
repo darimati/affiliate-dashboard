@@ -79,7 +79,7 @@ function timeStr(){var n=new Date();return n.getHours().toString().padStart(2,'0
 
 function renderAdmin(partners){
   var ts=0,tr=0,sc=0;
-  partners.forEach(function(p){ts+=pm(p['\ud310\ub9e4\uac74\uc218']);var v=pm(p['\ub9e4\ucd9c']);tr+=v;if(v>=50000)sc++});
+  partners.forEach(function(p){ts+=pm(p['\ud310\ub9e4\uac74\uc218']);var v=pm(p['\ub9e4\ucd9c']);tr+=v;if(Math.round(v*.1)>=50000)sc++});
 
   var h='<div class="header"><h1><span>DARIMATI</span> Affiliate Dashboard</h1><div class="meta"><span class="view-badge view-admin">\uad00\ub9ac\uc790</span><span class="api-status" id="apiStatus">API IP \ub300\uae30</span><span><span class="live-dot"></span> \uc2e4\uc2dc\uac04</span><span>'+timeStr()+'</span></div></div>';
 
@@ -94,8 +94,8 @@ function renderAdmin(partners){
 
   h+='<div class="section-title">\ud30c\ud2b8\ub108\ubcc4 \uc815\uc0b0 \ud604\ud669 (\uc774\ubc88 \ub2ec)</div><div class="settlement-grid">';
   partners.forEach(function(p){
-    var v=pm(p['\ub9e4\ucd9c']),th=50000,pc=v>0?Math.min(100,Math.round(v/th*100)):0,cm=Math.round(v*.1);
-    h+='<div class="settle-card"><div class="name">'+p['\ud30c\ud2b8\ub108\uba85']+'</div><div class="row"><span class="k">\ub9e4\ucd9c</span><span>'+(v>0?fm(v):'-')+'</span></div><div class="row"><span class="k">\uc218\uc218\ub8cc (10%)</span><span>'+(cm>0?fm(cm):'-')+'</span></div><div class="row"><span class="k">\uc815\uc0b0 \ucd5c\uc18c</span><span>'+(v>=th?'\ub2ec\uc131':fm(th-v)+' \ub0a8\uc74c')+'</span></div><div class="progress-bar"><div class="fill" style="width:'+pc+'%"></div></div></div>';
+    var v=pm(p['\ub9e4\ucd9c']),th=50000,cm=Math.round(v*.1),pc=cm>0?Math.min(100,Math.round(cm/th*100)):0;
+    h+='<div class="settle-card"><div class="name">'+p['\ud30c\ud2b8\ub108\uba85']+'</div><div class="row"><span class="k">\ub9e4\ucd9c</span><span>'+(v>0?fm(v):'-')+'</span></div><div class="row"><span class="k">\uc218\uc218\ub8cc (10%)</span><span>'+(cm>0?fm(cm):'-')+'</span></div><div class="row"><span class="k">\uc815\uc0b0 \ucd5c\uc18c (5\ub9cc\uc6d0)</span><span>'+(cm>=th?'\ub2ec\uc131':fm(th-cm)+' \ub0a8\uc74c')+'</span></div><div class="progress-bar"><div class="fill" style="width:'+pc+'%"></div></div></div>';
   });
   h+='</div>';
 
@@ -110,16 +110,16 @@ function renderAdmin(partners){
 }
 
 function renderPartner(p,allPartners){
-  var v=pm(p['\ub9e4\ucd9c']),sales=pm(p['\ud310\ub9e4\uac74\uc218']),th=50000,pc=v>0?Math.min(100,Math.round(v/th*100)):0,cm=Math.round(v*.1);
+  var v=pm(p['\ub9e4\ucd9c']),sales=pm(p['\ud310\ub9e4\uac74\uc218']),th=50000,cm=Math.round(v*.1),pc=cm>0?Math.min(100,Math.round(cm/th*100)):0;
   var initial=p['\ud30c\ud2b8\ub108\uba85'].charAt(0);
 
   var h='<div class="header"><h1><span>DARIMATI</span> Affiliate</h1><div class="meta"><span class="view-badge view-partner">\ud30c\ud2b8\ub108</span><span><span class="live-dot"></span> \uc2e4\uc2dc\uac04</span><span>'+timeStr()+'</span></div></div>';
 
   h+='<div class="partner-header"><div class="avatar">'+initial+'</div><div class="info"><h2>'+p['\ud30c\ud2b8\ub108\uba85']+'</h2><div class="sub">\uc624\ud508: '+(p['\uc624\ud508\uc77c\uc790']||'-')+' \u00b7 \uae08\uc561: '+(p['\uae08\uc561 (\ub300\ud45c\uac00 \uae30\uc900)']||p['\uae08\uc561']||'-')+'</div></div></div>';
 
-  h+='<div class="summary-grid"><div class="summary-card"><div class="label">\ud310\ub9e4\uac74\uc218</div><div class="value">'+(sales>0?sales.toLocaleString()+'\uac74':'0\uac74')+'</div><div class="sub">\ub204\uc801</div></div><div class="summary-card"><div class="label">\ub9e4\ucd9c</div><div class="value">'+(v>0?fm(v):'0\uc6d0')+'</div><div class="sub">\ub204\uc801</div></div><div class="summary-card"><div class="label">\uc218\uc218\ub8cc (10%)</div><div class="value">'+(cm>0?fm(cm):'0\uc6d0')+'</div><div class="sub">\uc608\uc0c1 \uc815\uc0b0\uc561</div></div><div class="summary-card"><div class="label">\uc815\uc0b0 \uc0c1\ud0dc</div><div class="value">'+(v>=th?'\ub2ec\uc131':fm(th-v))+'</div><div class="sub">'+(v>=th?'\uc775\uc6d4 15\uc77c \uc9c0\uae09':'\ucd5c\uc18c \uae08\uc561\uae4c\uc9c0 \ub0a8\uc74c')+'</div></div></div>';
+  h+='<div class="summary-grid"><div class="summary-card"><div class="label">\ud310\ub9e4\uac74\uc218</div><div class="value">'+(sales>0?sales.toLocaleString()+'\uac74':'0\uac74')+'</div><div class="sub">\ub204\uc801</div></div><div class="summary-card"><div class="label">\ub9e4\ucd9c</div><div class="value">'+(v>0?fm(v):'0\uc6d0')+'</div><div class="sub">\ub204\uc801</div></div><div class="summary-card"><div class="label">\uc218\uc218\ub8cc (10%)</div><div class="value">'+(cm>0?fm(cm):'0\uc6d0')+'</div><div class="sub">\uc608\uc0c1 \uc815\uc0b0\uc561</div></div><div class="summary-card"><div class="label">\uc815\uc0b0 \uc0c1\ud0dc</div><div class="value">'+(cm>=th?'\ub2ec\uc131':fm(th-cm))+'</div><div class="sub">'+(cm>=th?'\uc775\uc6d4 15\uc77c \uc9c0\uae09':'\ucd5c\uc18c \uae08\uc561\uae4c\uc9c0 \ub0a8\uc74c')+'</div></div></div>';
 
-  h+='<div class="settle-card" style="margin-bottom:28px"><div class="name">\uc815\uc0b0 \uc9c4\ud589\ub960</div><div class="row"><span class="k">\ud604\uc7ac \ub9e4\ucd9c</span><span>'+(v>0?fm(v):'0\uc6d0')+'</span></div><div class="row"><span class="k">\uc815\uc0b0 \ucd5c\uc18c (10\ub9cc\uc6d0)</span><span>'+pc+'%</span></div><div class="progress-bar" style="height:8px"><div class="fill" style="width:'+pc+'%"></div></div></div>';
+  h+='<div class="settle-card" style="margin-bottom:28px"><div class="name">\uc815\uc0b0 \uc9c4\ud589\ub960</div><div class="row"><span class="k">\ud604\uc7ac \uc815\uc0b0\uc561</span><span>'+(cm>0?fm(cm):'0\uc6d0')+'</span></div><div class="row"><span class="k">\uc815\uc0b0 \ucd5c\uc18c (5\ub9cc\uc6d0)</span><span>'+pc+'%</span></div><div class="progress-bar" style="height:8px"><div class="fill" style="width:'+pc+'%"></div></div></div>';
 
   var u=p['\ud788\ub4e0\ub9c1\ud06c URL']||'';
   if(u){
