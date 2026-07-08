@@ -113,6 +113,14 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 .info-card .ic-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:6px}
 .info-card .ic-value{font-size:14px;font-weight:600}
 
+/* Order/Settlement Tables */
+.section-label{font-size:13px;font-weight:700;margin:24px 0 12px;padding-top:20px;border-top:1px solid var(--line-soft)}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{text-align:left;padding:10px 12px;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line);white-space:nowrap;font-weight:600}
+.data-table td{padding:10px 12px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(99,102,241,.03)}
+
 /* Footer */
 .footer{text-align:center;padding:24px 0 32px;font-size:12px;color:var(--muted)}
 .footer a{color:var(--accent);text-decoration:none}
@@ -137,30 +145,39 @@ body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFo
 
 <div id="app">
   <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:var(--muted)">
-    <div style="text-align:center"><div style="font-size:24px;margin-bottom:8px">Loading...</div><div style="font-size:13px">Google Sheets 데이터 로딩 중</div></div>
+    <div style="text-align:center"><div style="font-size:24px;margin-bottom:8px">Loading...</div><div style="font-size:13px">Google Sheets \ub370\uc774\ud130 \ub85c\ub529 \uc911</div></div>
   </div>
 </div>
 
 <script>
+var SHEET_ID='1TtkspzT2Ng9Mm9Kp7EOPBx-ns2eDY5Mbvixt5tL_LcU';
+var ORDER_SHEET='\uc8fc\ubb38\ub0b4\uc5ed';
+var SETTLE_SHEET='\uc815\uc0b0\uae30\ub85d';
+
 function getParam(k){return new URLSearchParams(location.search).get(k)}
 function pm(s){if(!s||s==='-'||s==='')return 0;return parseInt(String(s).replace(/[^0-9]/g,''),10)||0}
 function fm(n){return n===0?'0\uc6d0':n.toLocaleString('ko-KR')+'\uc6d0'}
 function fms(n){if(n===0)return'0';if(n>=10000)return(n/10000).toFixed(1)+'\ub9cc';return n.toLocaleString('ko-KR')}
+function gvizUrl(s){return'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet='+encodeURIComponent(s)+'&headers=1'}
+function parseGviz(t){var m=t.match(/google\.visualization\.Query\.setResponse\(([\s\S]+)\);?\s*$/);if(!m){var j=t.match(/\{[\s\S]+\}/);return j?JSON.parse(j[0]):null}return JSON.parse(m[1])}
+function extractRows(d){if(!d||!d.table)return[];var c=d.table.cols.map(function(x){var l=x.label||'';return l.split(/\n/)[0].trim()});return d.table.rows.map(function(r){var o={};r.c.forEach(function(cell,i){o[c[i]]=cell?(cell.f||cell.v||''):''});return o})}
 
-function renderPartner(p){
+function renderPartner(p,orders,settlements){
   var name=p['\ud30c\ud2b8\ub108\uba85']||'';
   var initial=name.charAt(0);
   var sales=pm(p['\ud310\ub9e4\uac74\uc218']);
   var revenue=pm(p['\ub9e4\ucd9c']);
   var price=pm(p['\uae08\uc561 (\ub300\ud45c\uac00 \uae30\uc900)']||p['\uae08\uc561']||'129000');
   var commission=Math.round(revenue*0.1);
+  var settled=0;
+  settlements.forEach(function(s){settled+=pm(s['\uc815\uc0b0\uae08\uc561'])});
+  var remaining=Math.max(0,commission-settled);
   var threshold=50000;
-  var pct=commission>0?Math.min(100,Math.round(commission/threshold*100)):0;
+  var pct=remaining>0?Math.min(100,Math.round(remaining/threshold*100)):0;
   var openDate=p['\uc624\ud508\uc77c\uc790']||'-';
   var url=p['\ud310\ub9e4\ub9c1\ud06c URL']||'';
   var status=p['\ud310\ub9e4\ub9c1\ud06c \uc804\ub2ec']||'';
 
-  // Simulated monthly bars (placeholder until real data exists)
   var months=['1\uc6d4','2\uc6d4','3\uc6d4','4\uc6d4','5\uc6d4','6\uc6d4'];
   var vals=[0,0,0,0,0,revenue];
   var maxVal=Math.max.apply(null,vals)||1;
@@ -188,7 +205,7 @@ function renderPartner(p){
   h+='<div class="kpi-card"><div class="kpi-label">\ud310\ub9e4 \uac74\uc218</div><div class="kpi-value">'+(sales>0?sales+'\uac74':'0\uac74')+'</div><div class="kpi-sub neutral">\ub204\uc801 \uc804\uccb4</div></div>';
   h+='<div class="kpi-card"><div class="kpi-label">\ub9e4\ucd9c</div><div class="kpi-value">'+(revenue>0?fm(revenue):'0\uc6d0')+'</div><div class="kpi-sub neutral">\ub204\uc801</div></div>';
   h+='<div class="kpi-card highlight"><div class="kpi-label">\uc218\uc775 (10%)</div><div class="kpi-value" style="color:var(--accent)">'+(commission>0?fm(commission):'0\uc6d0')+'</div><div class="kpi-sub" style="color:var(--muted-light)">\uc608\uc0c1 \uc815\uc0b0\uc561</div></div>';
-  h+='<div class="kpi-card"><div class="kpi-label">\uc815\uc0b0 \uc0c1\ud0dc</div><div class="kpi-value">'+(commission>=threshold?'<span style="color:var(--green)">\ub2ec\uc131</span>':'<span style="color:var(--yellow)">'+pct+'%</span>')+'</div><div class="kpi-sub neutral">'+(commission>=threshold?'\uc775\uc6d4 15\uc77c \uc9c0\uae09':fm(threshold-commission)+' \ub0a8\uc74c')+'</div></div>';
+  h+='<div class="kpi-card"><div class="kpi-label">\uc815\uc0b0 \uc0c1\ud0dc</div><div class="kpi-value">'+(remaining>=threshold?'<span style="color:var(--green)">\ub2ec\uc131</span>':'<span style="color:var(--yellow)">'+pct+'%</span>')+'</div><div class="kpi-sub neutral">'+(remaining>=threshold?'\uc775\uc6d4 15\uc77c \uc9c0\uae09':fm(threshold-remaining)+' \ub0a8\uc74c')+'</div></div>';
   h+='</div></div></section>';
 
   // Dashboard Window
@@ -208,17 +225,41 @@ function renderPartner(p){
   h+='</div></div>';
 
   // Settlement ring
-  h+='<div class="chart-box"><div class="chart-label">\uc815\uc0b0 \uc9c4\ud589\ub960</div><div class="settle-ring">';
+  h+='<div class="chart-box"><div class="chart-label">\uc815\uc0b0 \ud604\ud669</div><div class="settle-ring">';
   var circumference=2*Math.PI*42;
   var dashoffset=circumference-(pct/100)*circumference;
   h+='<div class="ring-wrap"><svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="#e6e6e6" stroke-width="8"/><circle cx="50" cy="50" r="42" fill="none" stroke="#6366f1" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+circumference+'" stroke-dashoffset="'+dashoffset+'"/></svg><div class="ring-text"><div class="ring-pct">'+pct+'%</div><div class="ring-label">\ub2ec\uc131\ub960</div></div></div>';
-  h+='<div class="settle-info"><div class="settle-row"><span class="sk">\ud604\uc7ac \uc815\uc0b0\uc561</span><span class="sv">'+(commission>0?fm(commission):'0\uc6d0')+'</span></div><div class="settle-row"><span class="sk">\ucd5c\uc18c \uae08\uc561</span><span class="sv">50,000\uc6d0</span></div><div class="settle-row"><span class="sk">\uc218\uc218\ub8cc\uc728</span><span class="sv">10%</span></div><div class="settle-row"><span class="sk">\uc9c0\uae09\uc77c</span><span class="sv">\uc775\uc6d4 15\uc77c</span></div></div>';
+  h+='<div class="settle-info"><div class="settle-row"><span class="sk">\ubc1c\uc0dd \uc218\uc218\ub8cc</span><span class="sv">'+(commission>0?fm(commission):'0\uc6d0')+'</span></div>';
+  if(settled>0)h+='<div class="settle-row"><span class="sk">\uc815\uc0b0 \uc644\ub8cc</span><span class="sv" style="color:var(--green)">-'+fm(settled)+'</span></div>';
+  h+='<div class="settle-row"><span class="sk">\ubbf8\uc815\uc0b0 \uc794\uc561</span><span class="sv">'+(remaining>0?fm(remaining):'0\uc6d0')+'</span></div>';
+  h+='<div class="settle-row"><span class="sk">\ucd5c\uc18c \uae08\uc561</span><span class="sv">50,000\uc6d0</span></div>';
+  h+='<div class="settle-row"><span class="sk">\uc9c0\uae09\uc77c</span><span class="sv">\uc775\uc6d4 15\uc77c</span></div></div>';
   h+='</div></div>';
 
   h+='</div>'; // chart-grid
 
+  // Order history
+  if(orders.length>0){
+    h+='<div class="section-label">\uc8fc\ubb38 \ub0b4\uc5ed</div>';
+    h+='<table class="data-table"><thead><tr><th>\uc8fc\ubb38\uc77c</th><th>\uc8fc\ubb38\uc0ac\uc774\ud2b8</th><th>\uc0c1\ud488\uba85</th><th>\uc218\ub7c9</th><th>\uae08\uc561</th><th>\uc8fc\ubb38\ubc88\ud638</th></tr></thead><tbody>';
+    orders.forEach(function(o){
+      h+='<tr><td>'+(o['\uc8fc\ubb38\uc77c']||'-')+'</td><td>'+(o['\uc8fc\ubb38\uc0ac\uc774\ud2b8']||'-')+'</td><td>'+(o['\uc0c1\ud488\uba85']||'-')+'</td><td>'+(o['\uc218\ub7c9']||'-')+'</td><td>'+(o['\uae08\uc561']||'-')+'</td><td>'+(o['\uc8fc\ubb38\ubc88\ud638']||'-')+'</td></tr>';
+    });
+    h+='</tbody></table>';
+  }
+
+  // Settlement history
+  if(settlements.length>0){
+    h+='<div class="section-label">\uc815\uc0b0 \uc644\ub8cc \ub0b4\uc5ed</div>';
+    h+='<table class="data-table"><thead><tr><th>\uc815\uc0b0\uc77c</th><th>\uc815\uc0b0\uae08\uc561</th><th>\uba54\ubaa8</th></tr></thead><tbody>';
+    settlements.forEach(function(s){
+      h+='<tr><td>'+(s['\uc815\uc0b0\uc77c']||'-')+'</td><td>'+(s['\uc815\uc0b0\uae08\uc561']||'-')+'</td><td>'+(s['\uba54\ubaa8']||'-')+'</td></tr>';
+    });
+    h+='</tbody></table>';
+  }
+
   // Info grid
-  h+='<div class="info-grid">';
+  h+='<div class="info-grid" style="margin-top:24px">';
   h+='<div class="info-card"><div class="ic-label">\uc624\ud508\uc77c</div><div class="ic-value">'+openDate+'</div></div>';
   h+='<div class="info-card"><div class="ic-label">\uc0c1\ud488 \uae08\uc561</div><div class="ic-value">'+(price>0?fm(price):'-')+'</div></div>';
   h+='<div class="info-card"><div class="ic-label">\uc0c1\ud0dc</div><div class="ic-value">'+((!status||status==='-')?'<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:12px;font-weight:600">\ud65c\uc131</span>':status)+'</div></div>';
@@ -262,8 +303,21 @@ async function load(){
       return;
     }
     var p=await r.json();
-    app.innerHTML=renderPartner(p);
-    document.title='DARIMATI - '+(p['\ud30c\ud2b8\ub108\uba85']||'')+' Dashboard';
+    var name=p['\ud30c\ud2b8\ub108\uba85']||'';
+
+    var orders=[];
+    var settlements=[];
+    try{
+      var texts=await Promise.all([
+        fetch(gvizUrl(ORDER_SHEET)).then(function(r){return r.text()}).catch(function(){return''}),
+        fetch(gvizUrl(SETTLE_SHEET)).then(function(r){return r.text()}).catch(function(){return''})
+      ]);
+      if(texts[0]){try{var or=extractRows(parseGviz(texts[0]));if(or.length>0&&or[0].hasOwnProperty('\uc8fc\ubb38\uc77c'))orders=or.filter(function(o){return o['\ud30c\ud2b8\ub108\uba85']===name})}catch(e){}}
+      if(texts[1]){try{var sr=extractRows(parseGviz(texts[1]));if(sr.length>0&&sr[0].hasOwnProperty('\uc815\uc0b0\uc77c'))settlements=sr.filter(function(s){return s['\ud30c\ud2b8\ub108\uba85']===name})}catch(e){}}
+    }catch(e){}
+
+    app.innerHTML=renderPartner(p,orders,settlements);
+    document.title='DARIMATI - '+name+' Dashboard';
   }catch(e){
     app.innerHTML='<div style="text-align:center;padding:80px 24px;color:var(--muted)"><h2>\ub370\uc774\ud130 \ub85c\ub4dc \uc2e4\ud328</h2><p style="margin-top:8px">'+e.message+'</p></div>';
   }
