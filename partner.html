@@ -32,16 +32,24 @@ a.btn{display:inline-block;margin-top:24px;background:var(--text);color:var(--bg
    옛 토큰 → 새 토큰(company-dari/darimati-dash/partner) */
 var MOVED_TO = {
   "WSYl6u-up8zc-gIC69txkw": "eP5viNn07BSy1jYG",   /* 이상학 코치 */
-  "moXHJnc9WFD4qd3N__TGtA": "hOVI8Seblq1dDIiy"    /* 러독(안현기) */
+  "moXHJnc9WFD4qd3N__TGtA": "hOVI8Seblq1dDIiy"    /* 러독(안현기) — 2026-10-01 계약 만료, 최종 정산 화면만 */
 };
+var ENDED = { "moXHJnc9WFD4qd3N__TGtA": 1 };
 (function () {
   var t = new URLSearchParams(location.search).get("token"), n = t && MOVED_TO[t];
   if (!n) return;
   var u = "https://company-dari.github.io/darimati-dash/partner/?t=" + n;
+  var a = document.querySelector("a.btn");
+  a.href = u; a.removeAttribute("target");
+  if (ENDED[t]) {
+    document.querySelector("h1").innerHTML = "파트너십이<br>종료되었습니다";
+    document.querySelector("p").innerHTML = "함께해 주셔서 감사합니다.<br>최종 정산 내역은 아래에서 확인하실 수 있습니다.";
+    a.textContent = "최종 정산 내역 보기 →";
+    return;
+  }
   document.querySelector("h1").innerHTML = "정산 화면이<br>새 주소로 옮겨졌습니다";
   document.querySelector("p").innerHTML = "지금부터 공식몰 주문 기준으로 정산됩니다.<br>이전 네이버 실적도 새 화면에 함께 보입니다.";
-  var a = document.querySelector("a.btn");
-  a.href = u; a.removeAttribute("target"); a.textContent = "새 정산 화면 열기 →";
+  a.textContent = "새 정산 화면 열기 →";
 })();
 </script>
 </body>
