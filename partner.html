@@ -27,5 +27,22 @@ a.btn{display:inline-block;margin-top:24px;background:var(--text);color:var(--bg
   <p>현재 이 화면은 일시적으로 운영을 멈춘 상태입니다.<br>재개가 필요하시면 담당자에게 연락해 주세요.</p>
   <a class="btn" href="https://www.instagram.com/darimati_official/" target="_blank" rel="noopener">@darimati_official 문의하기</a>
 </main>
+<script>
+/* 쇼피파이 정산으로 옮긴 파트너는 옛 링크로 들어와도 새 화면으로 안내한다 (2026-10-01 사장님 지시)
+   옛 토큰 → 새 토큰(company-dari/darimati-dash/partner) */
+var MOVED_TO = {
+  "WSYl6u-up8zc-gIC69txkw": "eP5viNn07BSy1jYG",   /* 이상학 코치 */
+  "moXHJnc9WFD4qd3N__TGtA": "hOVI8Seblq1dDIiy"    /* 러독(안현기) */
+};
+(function () {
+  var t = new URLSearchParams(location.search).get("token"), n = t && MOVED_TO[t];
+  if (!n) return;
+  var u = "https://company-dari.github.io/darimati-dash/partner/?t=" + n;
+  document.querySelector("h1").innerHTML = "정산 화면이<br>새 주소로 옮겨졌습니다";
+  document.querySelector("p").innerHTML = "지금부터 공식몰 주문 기준으로 정산됩니다.<br>이전 네이버 실적도 새 화면에 함께 보입니다.";
+  var a = document.querySelector("a.btn");
+  a.href = u; a.removeAttribute("target"); a.textContent = "새 정산 화면 열기 →";
+})();
+</script>
 </body>
 </html>
