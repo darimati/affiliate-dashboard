@@ -2,8 +2,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  schedule:
-    - cron: '0 * * * *'  # every hour
+  # 2026-10-01 일시 중지: 매시 자동 생성 끔 (숫자가 안 바뀌는데 돌던 것)
   workflow_dispatch: {}
 permissions:
   contents: read
@@ -23,11 +22,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Generate partner JSON files
-        env:
-          PARTNER_TOKENS: ${{ secrets.PARTNER_TOKENS }}
-        run: |
-          python3 generate_data.py
+      # 2026-10-01 일시 중지: 파트너 데이터 생성 안 함 → 배포본에서 data/ 가 사라진다(안내문만 공개)
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
